@@ -1,0 +1,96 @@
+<canvas id="cursor-sparkle" aria-hidden="true" class="fixed inset-0 -z-10 h-full w-full pointer-events-none"></canvas>
+
+<script>
+  type Particle = {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    size: number;
+    life: number;
+    bornAt: number;
+  };
+
+  const canvas = document.getElementById('cursor-sparkle');
+  if (canvas instanceof HTMLCanvasElement) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const touchOnly = window.matchMedia('(pointer: coarse)').matches;
+
+    if (reduceMotion || touchOnly) {
+      canvas.remove();
+    } else {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        const particles: Particle[] = [];
+        let animationId = 0;
+
+        const resize = (): void => {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = Math.floor(window.innerWidth * dpr);
+          canvas.height = Math.floor(window.innerHeight * dpr);
+          canvas.style.width = `${window.innerWidth}px`;
+          canvas.style.height = `${window.innerHeight}px`;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        };
+
+        const spawn = (x: number, y: number): void => {
+          const count = 1 + Math.floor(Math.random() * 3);
+          for (let i = 0; i < count; i += 1) {
+            particles.push({
+              x,
+              y,
+              vx: (Math.random() - 0.5) * 1.5,
+              vy: (Math.random() - 0.5) * 1.5,
+              size: 1 + Math.random() * 2.5,
+              life: 600,
+              bornAt: performance.now(),
+            });
+          }
+        };
+
+        const draw = (now: number): void => {
+          ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+          for (let i = particles.length - 1; i >= 0; i -= 1) {
+            const p = particles[i];
+            const elapsed = now - p.bornAt;
+            if (elapsed > p.life) {
+              particles.splice(i, 1);
+              continue;
+            }
+
+            p.x += p.vx;
+            p.y += p.vy;
+            const alpha = Math.max(0, 1 - elapsed / p.life);
+
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(91, 227, 255, ${alpha.toFixed(3)})`;
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        };
+
+        const loop = (now: number): void => {
+          draw(now);
+          animationId = window.requestAnimationFrame(loop);
+        };
+
+        resize();
+        animationId = window.requestAnimationFrame(loop);
+
+        window.addEventListener('pointermove', (event) => {
+          if (event.pointerType !== 'mouse') {
+            return;
+          }
+          spawn(event.clientX, event.clientY);
+        });
+
+        window.addEventListener('resize', resize);
+        window.addEventListener('beforeunload', () => {
+          if (animationId) {
+            window.cancelAnimationFrame(animationId);
+          }
+        });
+      }
+    }
+  }
+</script>

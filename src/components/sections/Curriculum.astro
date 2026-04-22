@@ -1,0 +1,14 @@
+---
+import { curriculum } from '../../content/sections';
+---
+
+<section id="curriculum" class="section-shell py-14 md:py-18">
+  <div class="glass-card rounded-3xl p-8 md:p-10">
+    <h2 class="mb-5 font-orbitron text-2xl text-cyan-100 md:text-3xl">{curriculum.heading}</h2>
+    <ul class="grid gap-3 text-slate-200/90">
+      {curriculum.points.map((point) => (
+        <li class="rounded-xl border border-white/20 bg-white/5 p-4 leading-relaxed">{point}</li>
+      ))}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,13 @@
+---
+interface Props {
+  title: string;
+  body: string;
+}
+
+const { title, body } = Astro.props;
+---
+
+<article class="glass-card animate-float rounded-2xl p-6">
+  <h3 class="mb-3 font-orbitron text-lg text-cyan-100">{title}</h3>
+  <p class="leading-relaxed text-slate-200/90">{body}</p>
+</article>

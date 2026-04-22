@@ -1,0 +1,13 @@
+---
+import FloatingButton from '../FloatingButton.astro';
+import { hero } from '../../content/sections';
+---
+
+<section id="top" class="section-shell grid min-h-[72vh] place-items-center py-16 md:py-24">
+  <div class="text-center">
+    <p class="mb-4 font-orbitron text-xs tracking-[0.35em] text-cyan-200/90 md:text-sm">KAMIYAMA MARUGOTO KOSEN</p>
+    <h1 class="nebula-text mb-6 text-4xl font-black leading-tight md:text-6xl">{hero.title}</h1>
+    <p class="mx-auto mb-8 max-w-3xl text-base leading-relaxed text-slate-200/90 md:text-xl">{hero.subtitle}</p>
+    <FloatingButton href={hero.ctaHref} label={hero.ctaLabel} />
+  </div>
+</section>
